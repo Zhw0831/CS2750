@@ -1,8 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-from sklearn import svm
-from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
 
 from sklearn.preprocessing import StandardScaler  
 
@@ -29,7 +28,7 @@ X_train = scaler.transform(X_train)
 X_test = scaler.transform(X_test)
 
 # apply the svm 
-clf = svm.SVC(kernel='linear',probability=True)
+clf = MLPClassifier(random_state=2,hidden_layer_sizes=(4,3),activation='logistic')
 # fit the model
 clf.fit(X_train, Y_train)
 # get the predictions
@@ -63,17 +62,17 @@ print('NPV for test data:\n',npv_test)
 
 
 # predict the probability for class 1 (not just class label)
-probs_svm = clf.predict_proba(X_test)
+probs_mlp = clf.predict_proba(X_test)
 
 # calculate AUROC
-Auroc_score=roc_auc_score(Y_test, probs_svm[:,1])
+Auroc_score=roc_auc_score(Y_test, probs_mlp[:,1])
 print("AUROC score: {:.2f}".format(Auroc_score))
 
 
 # Draw the ROC curve
 plt.figure(1)
 # ROC curve components
-fpr, tpr, thresholdsROC = roc_curve(Y_test, probs_svm[:,1])
+fpr, tpr, thresholdsROC = roc_curve(Y_test, probs_mlp[:,1])
 #plot
 plt.plot(fpr,tpr)
 plt.title("ROC curve")
@@ -81,13 +80,13 @@ plt.xlabel("1-SPEC")
 plt.ylabel("SENS")
 plt.show()
 
-auprc = average_precision_score(Y_test, probs_svm[:,1])
+auprc = average_precision_score(Y_test, probs_mlp[:,1])
 print("AUPRC score: {:.2f}".format(auprc))
 
 # Draw the PR curve
 plt.figure(2)
 # Components of the Precision recall curve
-precision, recall, thresholdsPR = precision_recall_curve(Y_test, probs_svm[:,1])
+precision, recall, thresholdsPR = precision_recall_curve(Y_test, probs_mlp[:,1])
 # plot
 plt.plot(recall,precision)
 plt.title("PR curve")
@@ -97,7 +96,12 @@ plt.show()
 
 
 
+
+# get the predictions
 Y_pred = clf.predict(X_train)
+
+
+# evaluate the metrics
 
 # Train Accuracy
 print("Train score: {:.2f}".format(clf.score(X=X_train, y=Y_train)))
@@ -124,17 +128,17 @@ print('NPV for train data:\n',npv_test)
 
 
 # predict the probability for class 1 (not just class label)
-probs_svm = clf.predict_proba(X_train)
+probs_mlp = clf.predict_proba(X_train)
 
 # calculate AUROC
-Auroc_score=roc_auc_score(Y_train, probs_svm[:,1])
+Auroc_score=roc_auc_score(Y_train, probs_mlp[:,1])
 print("AUROC score: {:.2f}".format(Auroc_score))
 
 
 # Draw the ROC curve
 plt.figure(1)
 # ROC curve components
-fpr, tpr, thresholdsROC = roc_curve(Y_train, probs_svm[:,1])
+fpr, tpr, thresholdsROC = roc_curve(Y_train, probs_mlp[:,1])
 #plot
 plt.plot(fpr,tpr)
 plt.title("ROC curve")
@@ -142,21 +146,19 @@ plt.xlabel("1-SPEC")
 plt.ylabel("SENS")
 plt.show()
 
-auprc = average_precision_score(Y_train, probs_svm[:,1])
+auprc = average_precision_score(Y_train, probs_mlp[:,1])
 print("AUPRC score: {:.2f}".format(auprc))
 
 # Draw the PR curve
 plt.figure(2)
 # Components of the Precision recall curve
-precision, recall, thresholdsPR = precision_recall_curve(Y_train, probs_svm[:,1])
+precision, recall, thresholdsPR = precision_recall_curve(Y_train, probs_mlp[:,1])
 # plot
 plt.plot(recall,precision)
 plt.title("PR curve")
 plt.xlabel("SENS (Recall)")
 plt.ylabel("PPV (Precision)")
 plt.show()
-
-
 
 
 

@@ -29,7 +29,7 @@ X_train = scaler.transform(X_train)
 X_test = scaler.transform(X_test)
 
 # apply the svm 
-clf = svm.SVC(kernel='linear',probability=True)
+clf = svm.SVC(kernel='sigmoid',probability=True)
 # fit the model
 clf.fit(X_train, Y_train)
 # get the predictions
@@ -109,7 +109,7 @@ print(conf_matrix)
 tn, fp, fn, tp = confusion_matrix(Y_train, Y_pred).ravel()
 
 
-# calculate the misclassification error, SENS (recall),SPEC, PPV (precision), NPV on the train data
+# calculate the misclassification error, SENS (recall),SPEC, PPV (precision), NPV on the test data
 mis_err_test = (fp+fn)/(tn+fp+fn+tp)
 sens_test = tp/(tp+fn)
 spec_test = tn/(tn+fp)
